@@ -1,16 +1,16 @@
-using Distributions
+# using Distributions
 
 
 function block_bootstrap_DGP(fm::FactorModel, factor_innovations::Array{Float64, 2}, block_size=10)
 end
-block_bootstrap_DGP(fm::FactorModel) = block_bootstrap_DGP(fm, apply(randn, size(fm.x)))
+block_bootstrap_DGP(fm::FactorModel) = block_bootstrap_DGP(fm, randn(size(fm.x)))
 
 function parametric_bootstrap_DGP(fm::FactorModel, factor_innovations::Array{Float64, 2})
     # draw x from a parametric bootstrap with the parameters (estimated factors and loadings) given in fm
     # Note: this is a DGP for the factor equation (x = factors*loadings' + e where e are the innovations) only
     x = fm.factors*fm.loadings' + factor_innovations
 end
-parametric_bootstrap_DGP(fm::FactorModel) = parametric_bootstrap_DGP(fm, apply(randn, size(fm.x)))  # if no arguments are applied all innovations are assumed standard normal
+parametric_bootstrap_DGP(fm::FactorModel) = parametric_bootstrap_DGP(fm, randn(size(fm.x)))  # if no arguments are applied all innovations are assumed standard normal
 
 
 

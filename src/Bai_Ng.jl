@@ -1,5 +1,5 @@
 # trying to replicate Bai and Ng 2002
-using FactorModels
+# using FactorModels
 
 tuples1 = [(40, 100, 1), (60, 100, 1), (60, 200, 1), (60, 500, 1), (60, 1000, 1), (60, 2000, 1), (100, 100, 1), (100, 200, 1), (100, 500, 1), (100, 1000, 1), (100, 2000, 1), (100, 40, 1), (100, 60, 1), (200, 60, 1), (500, 60, 1), (1000, 60, 1), (2000, 60, 1), (60, 4000, 1), (100, 4000, 1), (60, 8000, 1), (100, 8000, 1), (4000, 60, 1), (4000, 100, 1), (8000, 60, 1), (8000, 100, 1), (50, 10, 1), (100, 10, 1), (100, 20, 1), (10, 100, 1), (20, 100, 1)]
 tuples2 = [(40, 100, 3), (60, 100, 3), (60, 200, 3), (60, 500, 3), (60, 1000, 3), (60, 2000, 3), (100, 100, 3), (100, 200, 3), (100, 500, 3), (100, 1000, 3), (100, 2000, 3), (100, 40, 3), (100, 60, 3), (200, 60, 3), (500, 60, 3), (1000, 60, 3), (2000, 60, 3), (60, 4000, 3), (100, 4000, 3), (60, 8000, 3), (100, 8000, 3), (4000, 60, 3), (4000, 100, 3), (8000, 60, 3), (8000, 100, 3), (50, 10, 3), (100, 10, 3), (100, 20, 3), (10, 100, 3), (20, 100, 3)]
@@ -15,7 +15,7 @@ function replicate_table(sample_tuples, num_reps=1)  # replicate main informatio
             results_per_rep = zeros(num_reps)
             for rep in 1:num_reps
                 println("tuple: ", sample_tuples[i], "\t repetition: ", rep)
-                y, x, f, lambda, epsilon_x, epsilon_y = apply(factor_model_DGP, sample_tuples[i])
+                y, x, f, lambda, epsilon_x, epsilon_y = factor_model_DGP(sample_tuples[i])
                 x = normalize(x)
                 fm = FactorModel(x, criterion)
                 results_per_rep[rep] = fm.number_of_factors

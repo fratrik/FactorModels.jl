@@ -1,22 +1,18 @@
-using Distributions
-using DataFrames
-using DataArrays
-using StatsBase
 # allow formulae to be updated by "adding" a string to them  TODO: pull request to DataFrames.jl?
 #+(formula::Formula, str::ASCIIString) = Formula(formula.lhs, convert(Symbol, *(string(formula.rhs), " + ", str)))
 
-function lag_vector{T<:Number}(vec::Array{T,1})
+function lag_vector(vec::Array{<:Number,1})
     DataArray([0, vec[1:end-1]], [true, falses(length(vec)-1)])
 end
-function lag_vector{T<:Number}(vec::DataArray{T,1})
-    DataArray([0, vec.data[1:end-1]], [true, vec.na[1:end-1]])
-end
-function lag_matrix{T<:Number}(matr::Array{T, 2})
+# function lag_vector(vec::DataArray{<:Number,1})
+#     DataArray([0, vec.data[1:end-1]], [true, vec.na[1:end-1]])
+# end
+function lag_matrix(matr::Array{<:Number, 2})
     DataFrame([lag_vector(matr[:, col]) for col in 1:size(matr, 2)])
 end
-function lag_matrix(matr::DataFrame)
-    DataFrame([lag_vector(matr[:, col]) for col in 1:size(matr, 2)])
-end
+# function lag_matrix(matr::DataFrame)
+#     DataFrame([lag_vector(matr[:, col]) for col in 1:size(matr, 2)])
+# end
 function lagged_matrix(y::Array{Float64, 1}, lags::Array{Int64, 1})  # returns matrix of y and all lags asked for (cutting of the first few rows)
     lags_y = Array(DataArrays.DataArray, length(lags))
     for i in 1:length(lags)
@@ -59,10 +55,10 @@ function make_stationary(y::Array{Float64, 1})  # difference series until statio
 end
 
 
-norm_vector{T<:Number}(vec::Array{T, 1}) = vec./norm(vec) # makes vector unit norm
-norm_matrix{T<:Number}(mat::Array{T, 2}) = mapslices(norm_vector, mat, 2)  # call norm_vector for each column
+norm_vector(vec::Array{<:Number, 1}) = vec./norm(vec) # makes vector unit norm
+norm_matrix(mat::Array{<:Number, 2}) = mapslices(norm_vector, mat, 2)  # call norm_vector for each column
 
-possemidef(x) = try 
+possemidef(x) = try
     chol(x)
     return true
 catch
@@ -126,9 +122,9 @@ function factor_model_DGP(T::Int, N::Int, r::Int; model::String="Bai_Ng_2002", b
         std = chol(correlation)'
         f = randn(T, r)  # not specified in the paper
         Lambda = randn(N, r) .+ 1  # N(1,1)
-        lambda(t, i) = i == r ? (t < break_point ? Lambda[i, :] : Lambda[i, :] .+ b) : Lambda[i, :]  # in other words: there is a break only in the last variable
+        lambda2(t, i) = i == r ? (t < break_point ? Lambda[i, :] : Lambda[i, :] .+ b) : Lambda[i, :]  # in other words: there is a break only in the last variable
         epsilon = randn(T, N) * std
-        #x = Float64[(f[t, :]' * lambda(t, i))[1] for t = 1:T, i in 1:N] + epsilon  # note that lambda only depends on t because of structural breaks
+        #x = Float64[(f[t, :]' * lambda2(t, i))[1] for t = 1:T, i in 1:N] + epsilon  # note that lambda only depends on t because of structural breaks
         return(epsilon, f, Lambda, epsilon)  # TODO: this is fake
     end
 
@@ -142,7 +138,7 @@ function generate_ar(params=[0.4, 0.3, 0.2, 0.1], innovations=[])
     end
     ar
 end
-generate_ar(params=[0.4, 0.3, 0.2, 0.1], size_series=(1004, )) = generate_ar(params, apply(randn, size_series))
+# generate_ar(params=[0.4, 0.3, 0.2, 0.1], size_series=(1004, )) = generate_ar(params, apply(randn, size_series))
 
 function matrix_to_table(matrix::Matrix)  # makes a latex table from a matrix
     row_strs = Array(String, size(matrix, 1))

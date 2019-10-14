@@ -1,9 +1,9 @@
 module FactorModels
 
-using DataArrays
-using DataFrames
-
 import GLM.predict
+
+using Printf
+using LinearAlgebra:eigen
 
 export FactorModel, DynamicFactorModel, predict, calculate_factors, scree_plot,
     lag_vector, lagged_matrix, factor_model_DGP, normalize, pseudo_out_of_sample_forecasts, MSE, RMSE, benchmark_forecasts, benchmark_ar, diebold_mariano, matrix_to_table, print_matrix,

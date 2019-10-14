@@ -1,5 +1,3 @@
-using LARS
-
 function get_t_stat(y, w, x_i)
     design_matrix = hcat(ones(size(w, 1)), w[:, 2:end], x_i[size(w, 2):end])
     coefficients = inv(design_matrix'*design_matrix)*(design_matrix'*y)  # OLS estimate

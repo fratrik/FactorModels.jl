@@ -1,4 +1,4 @@
-type DynamicFactorModel
+struct DynamicFactorModel
     # A dynamic factor model is the same as a factor model but it includes time dependence structure which we model by using lags of the static factor in the forecasting equation
     factor_model::FactorModel
     number_of_factor_lags::Int64  # lag level to use for forecasting equation
@@ -29,7 +29,7 @@ end
 function make_factor_model_design_matrix(y, number_of_lags, factors, number_of_factors, number_of_factor_lags, break_indices)
     w = lagged_matrix(y, Int64[1:number_of_lags])
     return(w[:, 1], hcat(w[:, 2:end], apply(vcat, factors)[end-size(w,1)+1:end, 1:number_of_factors]))
-    # TODO: unfinished business: factor lags to get dynamic factor models (how many? see page 
+    # TODO: unfinished business: factor lags to get dynamic factor models (how many? see page
 end
 
 #p_values(fm::FactorModel) = map(t_stat -> 2*(1-cdf(Distributions.TDist(size(fm.x, 1)-length(fm.coefficients)), abs(t_stat))), fm.t_stats)
@@ -75,7 +75,7 @@ function predict(dfm::DynamicFactorModel, y::Array{Float64, 1}, h::Int64=1, numb
     #hat_matrix = design_matrix*inv(design_matrix'design_matrix)*design_matrix'
     #residual_variance = (residuals.^2)./(1.-diag(hat_matrix))  # HC 2
     #coefficient_covariance = inv(design_matrix'design_matrix)*(design_matrix'diagm(residual_variance)design_matrix)*inv(design_matrix'design_matrix)
-     
+
     return(residuals, prediction[1])
 end
 
